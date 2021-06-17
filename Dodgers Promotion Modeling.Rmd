@@ -1,0 +1,96 @@
+---
+title: "Dodgers Promotion"
+author: "Sam Sears"
+date: "September 15, 2020"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Packages
+
+```{r}
+library(ISLR)
+library(tidyverse)
+library(caret)
+library(MASS)
+library(dplyr)
+```
+
+
+# Load Data
+
+```{r}
+data = read.csv('dodgers_data_for_modeling.csv')
+str(data)
+```
+
+
+# Predictive Modeling
+
+## Split Data  
+
+```{r}
+
+# Split dataset into Test and Train
+set.seed(100)
+train_size = floor(0.80*nrow(data))
+train_index = sample(seq_len(nrow(data)), size = train_size)
+train = data[train_index,]
+test = data[-train_index,]
+str(train)
+str(test)
+```
+
+## Fit Models
+
+```{r}
+# Create Linear Model
+linear_model_promotion <- lm(attend ~ day_of_week + promotions, data = data)
+linear_model_bobblehead <- lm(attend ~ day_of_week + bobblehead, data = data)
+print(summary(linear_model_promotion))
+print(summary(linear_model_bobblehead))
+```
+
+```{r}
+# RSE of promotion model / average target variable
+6554/mean(data$attend)
+
+# RSE of bobblehead model / average target variable
+6548/mean(data$attend)
+```
+
+This tells use that the average difference between the line of best fit and the actual attendence is 6554 or 6548. To put that into context, those are about is 16% of the average attendence. In otherwords, it's pretty close, but not increadibly precise.
+
+```{r}
+confint(linear_model_promotion, conf.level=0.95)
+confint(linear_model_bobblehead, conf.level=0.95)
+```
+
+From these models, if we decided we were going to run a promotion, or bobblehead promotion (holding the promotions or bobblehead variable constant), we could see the associated affect of the day of the week. If we were going to run a promotion, the day of the week that would be associated with the highest attendence would be Saturday and we could expect an 5654 to 18037 more in attendence at a 95% confidence level. For a bobblehead promotion specifically, we can't be sure a specific day of the week would even be associated with higher attendence.
+
+## Test Model  
+
+```{r}
+linear_model_promotion <- lm(attend ~ day_of_week + promotions, data = train)
+summary(linear_model_promotion)
+
+predictions = linear_model_promotion %>% predict(test)
+
+RMSE(predictions, test$attend)
+
+RMSE(predictions, test$attend)/mean(test$attend)
+
+R2(predictions, test$attend)
+```
+
+RMSE of the test dataset is 7388 which gives an error rate of 18% which isn't great. However, this is pretty close to the train data RMSE of 6464 which provides evidence that the model holds. The R-square value of the test set is 0.25 which is means there is a somewhat low correlation between the predicted attendence and the actual attendence, but it is similar to the Adjusted R-squared of the train dataset.
+
+# Final Conclusion  
+
+**Which night would be best to run a marketing promotion?**  
+In otherwords, if we decide to run a promotion (control for the promotion variable) which day_of_week is associated with the highest increase in attendence? The answer is Saturday. Our data tells us that we can be 95% confident that if we decide to do a promotion, and if we choose Saturday as our night to do it, we can expect 5654 to 18037 more in attendence.
+
+
