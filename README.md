@@ -19,6 +19,11 @@ I determined that if we ran a promotion (any promotion), the day of the week tha
 * Dodgers Promotion Modeling.Rmd - R Markdown file of modeling
 * Dodgers Promotion Modeling.pdf - PDF version of the rmd modeling file
 
+## Tools
+* R
+* Python
+* Scipy
+
 ## Authors
 
 Samuel Sears @ssears219
