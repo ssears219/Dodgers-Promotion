@@ -2,6 +2,8 @@
 
 Using a regression model to choose the best night to have a promotion at Dodgers baseball game.
 
+![Baseball](https://cdn.pixabay.com/photo/2017/07/04/20/29/baseball-2472519_960_720.jpg?raw=true)
+
 ## Description
 
 Given a dataset that includes Dodgers attendance, opponent, day, weather, time, and which promotion was run if any, can we determine which day of the week would be best to run a promotion?
